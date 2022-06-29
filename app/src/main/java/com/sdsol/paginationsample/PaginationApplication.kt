@@ -5,5 +5,4 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class PaginationApplication : Application() {
-
 }
