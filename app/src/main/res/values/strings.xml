@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Pagination Sample</string>
+    <string name="please_check_your_internet_connection">Please check your internet</string>
+    <string name="slower_internet_connection">Slow Internet Connection</string>
+    <string name="unknown_error_occoured">Unknown error occured</string>
 </resources>
