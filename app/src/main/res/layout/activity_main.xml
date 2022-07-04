@@ -1,58 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_sessions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0" />
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:visibility="gone"
-        android:id="@+id/shimmer_container"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:shimmer_duration="1000">
+        tools:context=".ui.MainActivity">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_sessions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginBottom="@dimen/_8sdp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:shimmer_duration="1000">
 
-            <include layout="@layout/layout_session_shimmer_item" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
+                <include layout="@layout/layout_session_shimmer_item" />
 
-            <include layout="@layout/layout_session_shimmer_item" />
-        </LinearLayout>
+                <include layout="@layout/layout_session_shimmer_item" />
 
-    </com.facebook.shimmer.ShimmerFrameLayout>
+                <include layout="@layout/layout_session_shimmer_item" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <include layout="@layout/layout_session_shimmer_item" />
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

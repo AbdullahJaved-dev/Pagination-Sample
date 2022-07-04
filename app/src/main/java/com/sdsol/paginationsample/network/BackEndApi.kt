@@ -7,5 +7,5 @@ import retrofit2.http.POST
 
 interface BackEndApi {
     @POST("Provider/GetProviderSessionsList")
-    suspend fun getProviderSessionsList(@Body tutorSessionListRequest: GetProviderSessionsRequest): WebResponse<ProviderSessionResponse>
+    suspend fun getProviderSessionsList(@Body getProviderSessionsRequest: GetProviderSessionsRequest): WebResponse<ProviderSessionResponse>
 }

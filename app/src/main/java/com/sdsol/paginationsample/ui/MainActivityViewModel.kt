@@ -31,7 +31,7 @@ class MainActivityViewModel @Inject constructor(
                 GetProviderSessionsRequest(
                     "Past",
                     pageNo,
-                    15,
+                    50,
                     65
                 )
             ).response

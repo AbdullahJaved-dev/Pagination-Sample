@@ -2,16 +2,20 @@ package com.sdsol.paginationsample.ui
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
+import com.sdsol.paginationsample.R
 import com.sdsol.paginationsample.databinding.ActivityMainBinding
+import com.sdsol.paginationsample.util.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainActivityViewModel by viewModels()
+    private lateinit var sessionAdapter: SessionAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,8 +23,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        sessionAdapter = SessionAdapter()
+        setupUI()
         setupObservers()
         viewModel.getSessions(1)
+    }
+
+    private fun setupUI() {
+        binding.rvSessions.apply {
+            adapter = sessionAdapter
+        }
     }
 
     private fun setupObservers() {
@@ -28,9 +40,9 @@ class MainActivity : AppCompatActivity() {
             toast.observe(this@MainActivity) { e ->
                 e.getContentIfNotHandled()?.let {
                     if (it is Int) {
-                        Toast.makeText(this@MainActivity, getString(it), Toast.LENGTH_SHORT).show()
+                        binding.parentLayout.showSnackBar(getString(it))
                     } else {
-                        Toast.makeText(this@MainActivity, it as String, Toast.LENGTH_SHORT).show()
+                        binding.parentLayout.showSnackBar(it as String)
                     }
                 }
             }
@@ -47,8 +59,14 @@ class MainActivity : AppCompatActivity() {
 
             sessionsLiveData.observe(this@MainActivity) { e ->
                 e.getContentIfNotHandled()?.let {
-                    Toast.makeText(this@MainActivity, it.joinToString { "," }, Toast.LENGTH_SHORT)
-                        .show()
+                    sessionAdapter.setSessionList(it)
+                    /*binding.parentLayout.showSnackBar(
+                        it.joinToString(
+                            separator = ",",
+                            limit = 1,
+                            truncated = "..."
+                        )
+                    )*/
                 }
             }
         }
