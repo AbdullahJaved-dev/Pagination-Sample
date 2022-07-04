@@ -2,11 +2,8 @@ package com.sdsol.paginationsample.ui
 
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DefaultItemAnimator
-import com.sdsol.paginationsample.R
 import com.sdsol.paginationsample.databinding.ActivityMainBinding
 import com.sdsol.paginationsample.util.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint

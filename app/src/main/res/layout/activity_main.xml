@@ -30,35 +30,9 @@
             android:visibility="gone"
             app:shimmer_duration="1000">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-
-                <include layout="@layout/layout_session_shimmer_item" />
-            </LinearLayout>
+            <include
+                android:id="@+id/layout_shimmer"
+                layout="@layout/layout_shimmer_merge" />
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
