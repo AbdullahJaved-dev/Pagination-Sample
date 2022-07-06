@@ -1,6 +1,6 @@
 package com.sdsol.paginationsample.ui
 
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -13,7 +13,8 @@ import com.sdsol.paginationsample.model.response.provider_sessions.Listing
 import com.sdsol.paginationsample.network.BackEndApi
 import com.sdsol.paginationsample.util.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,25 +23,28 @@ class MainActivityViewModel @Inject constructor(
     val retrofitClient: BackEndApi
 ) : BaseViewModel() {
 
-    var sessionsLiveData = MutableLiveData<PagingData<Listing>>()
-    fun getSessions() {
+    var sessionsFlow: Flow<PagingData<Listing>> = flowOf(PagingData.empty())
+
+    private fun getSessions(): Flow<PagingData<Listing>> {
         if (resourceProvider.isInternetUnAvailable())
-            return
+            return flowOf(PagingData.empty())
         val request = GetProviderSessionsRequest(
             "Past",
             1,
             10,
             65
         )
-        val listData = Pager(PagingConfig(10)) {
+        sessionsFlow = Pager(PagingConfig(10, initialLoadSize = 2)) {
             SessionsDataSource(request, retrofitClient)
         }.flow.cachedIn(viewModelScope)
+        return sessionsFlow
+    }
 
-        viewModelScope.launch {
-            listData.collect {
-                sessionsLiveData.postValue(it)
-            }
-        }
-
+    override fun onCleared() {
+        super.onCleared()
+        Log.i(MainActivityViewModel::class.qualifiedName, "onCleared: c")
+    }
+    init {
+        getSessions()
     }
 }

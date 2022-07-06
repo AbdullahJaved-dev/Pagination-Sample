@@ -38,7 +38,6 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
             else -> {
                 _toast.postValue(Event(exception.message ?: exception.toString()))
             }
-
         }
     }
 

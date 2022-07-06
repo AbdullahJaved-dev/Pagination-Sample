@@ -6,10 +6,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import com.sdsol.paginationsample.R
 import com.sdsol.paginationsample.databinding.ActivityMainBinding
 import com.sdsol.paginationsample.util.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import java.util.concurrent.TimeoutException
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -26,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         sessionAdapter = SessionAdapter()
         setupUI()
         setupObservers()
-        viewModel.getSessions()
 
         binding.swipeRefresh.setOnRefreshListener {
             binding.swipeRefresh.isRefreshing = false
@@ -50,12 +55,31 @@ class MainActivity : AppCompatActivity() {
                 }
                 is LoadState.Error -> {
                     hideShimmer()
+                    when (val exception = (loadStates.source.refresh as LoadState.Error).error) {
+                        is SocketTimeoutException -> {
+                            binding.parentLayout.showSnackBar(getString(R.string.slower_internet_connection))
+                        }
+                        is TimeoutException -> {
+                            binding.parentLayout.showSnackBar(getString(R.string.slower_internet_connection))
+                        }
+                        is HttpException -> {
+                            binding.parentLayout.showSnackBar(getString(R.string.unknown_error_occoured))
+                        }
+                        is UnknownHostException -> {
+                            binding.parentLayout.showSnackBar(getString(R.string.slower_internet_connection))
+                        }
+                        else -> {
+                            binding.parentLayout.showSnackBar(
+                                exception.message ?: exception.toString()
+                            )
+                        }
+                    }
                 }
             }
         }
         binding.rvSessions.apply {
             adapter = sessionAdapter.withLoadStateFooter(
-               CustomLoadStateAdapter {
+                CustomLoadStateAdapter {
                     sessionAdapter.retry()
                 }
             )
@@ -79,18 +103,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            sessionsLiveData.observe(this@MainActivity) { e ->
-                lifecycleScope.launch {
-                    sessionAdapter.submitData(e)
-                    /*binding.parentLayout.showSnackBar(
-                        it.joinToString(
-                            separator = ",",
-                            limit = 1,
-                            truncated = "..."
-                        )
-                    )*/
+            lifecycleScope.launch {
+                sessionsFlow.collectLatest {
+                    sessionAdapter.submitData(it)
                 }
             }
+
         }
     }
 }

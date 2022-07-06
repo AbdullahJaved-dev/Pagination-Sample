@@ -7,7 +7,10 @@ import com.sdsol.paginationsample.model.request.provider_sessions.GetProviderSes
 import com.sdsol.paginationsample.model.response.provider_sessions.Listing
 import com.sdsol.paginationsample.network.BackEndApi
 
-class SessionsDataSource(val request: GetProviderSessionsRequest, val retrofitClient: BackEndApi) :
+class SessionsDataSource(
+    private val request: GetProviderSessionsRequest,
+    private val retrofitClient: BackEndApi
+) :
     PagingSource<Int, Listing>() {
     override fun getRefreshKey(state: PagingState<Int, Listing>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -18,13 +21,16 @@ class SessionsDataSource(val request: GetProviderSessionsRequest, val retrofitCl
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Listing> {
         try {
-            var nextPageNumber: Int? = null
+            val nextPageNumber: Int?
             val currentLoadingPageKey = params.key ?: 1
             request.PageIndex = currentLoadingPageKey
             val response = retrofitClient.getProviderSessionsList(request)
             val totalPages = response.response?.dataObject?.sessionsList?.totalPages
             val newList = response.response?.let {
-                Log.d("Current_Page", "$currentLoadingPageKey ${response.response?.dataObject?.sessionsList?.totalPages}")
+                Log.d(
+                    "Current_Page",
+                    "$currentLoadingPageKey ${response.response?.dataObject?.sessionsList?.totalPages}"
+                )
                 it.dataObject?.sessionsList?.listing ?: mutableListOf()
             } ?: run {
                 mutableListOf()
@@ -46,6 +52,5 @@ class SessionsDataSource(val request: GetProviderSessionsRequest, val retrofitCl
         } catch (e: Exception) {
             return LoadResult.Error(e)
         }
-
     }
 }
