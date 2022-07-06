@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 open class BaseViewModel @Inject constructor() : ViewModel() {
-    val isLoading = MutableLiveData<Boolean>()
 
     protected val _toast = MutableLiveData<Event<Any?>>()
     val toast: LiveData<Event<Any?>>
@@ -23,7 +22,6 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
 
 
     protected val handler = CoroutineExceptionHandler { _, exception ->
-
         when (exception) {
             is SocketTimeoutException -> {
                 _toast.postValue(Event(R.string.slower_internet_connection))
@@ -42,7 +40,6 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
             }
 
         }
-        isLoading.postValue(false)
     }
 
     protected fun ResourceProvider.isInternetUnAvailable(): Boolean {

@@ -6,35 +6,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.MainActivity">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_sessions"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_8sdp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0" />
+            android:layout_height="match_parent">
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:shimmer_duration="1000">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_sessions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/_8sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-            <include
-                android:id="@+id/layout_shimmer"
-                layout="@layout/layout_shimmer_merge" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:shimmer_duration="1000">
 
-        </com.facebook.shimmer.ShimmerFrameLayout>
+                <include
+                    android:id="@+id/layout_shimmer"
+                    layout="@layout/layout_shimmer_merge" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

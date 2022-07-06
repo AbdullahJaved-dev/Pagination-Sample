@@ -3,4 +3,6 @@
     <string name="please_check_your_internet_connection">Please check your internet</string>
     <string name="slower_internet_connection">Slow Internet Connection</string>
     <string name="unknown_error_occoured">Unknown error occured</string>
+    <string name="try_again">"Try again "</string>
+    <string name="error_text_label">Something  went wrong</string>
 </resources>

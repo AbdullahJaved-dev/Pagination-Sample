@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import com.sdsol.paginationsample.databinding.ActivityMainBinding
 import com.sdsol.paginationsample.util.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -23,13 +26,45 @@ class MainActivity : AppCompatActivity() {
         sessionAdapter = SessionAdapter()
         setupUI()
         setupObservers()
-        viewModel.getSessions(1)
+        viewModel.getSessions()
+
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = false
+            sessionAdapter.refresh()
+        }
     }
 
     private fun setupUI() {
-        binding.rvSessions.apply {
-            adapter = sessionAdapter
+        sessionAdapter.addLoadStateListener { loadStates ->
+            when (loadStates.source.refresh) {
+                is LoadState.NotLoading -> {
+                    hideShimmer()
+                }
+                is LoadState.Loading -> {
+                    if (sessionAdapter.itemCount == 0) {
+                        binding.shimmerContainer.startShimmer()
+                        binding.shimmerContainer.visibility = View.VISIBLE
+                    } else {
+                        hideShimmer()
+                    }
+                }
+                is LoadState.Error -> {
+                    hideShimmer()
+                }
+            }
         }
+        binding.rvSessions.apply {
+            adapter = sessionAdapter.withLoadStateFooter(
+               CustomLoadStateAdapter {
+                    sessionAdapter.retry()
+                }
+            )
+        }
+    }
+
+    private fun hideShimmer() {
+        binding.shimmerContainer.stopShimmer()
+        binding.shimmerContainer.visibility = View.GONE
     }
 
     private fun setupObservers() {
@@ -44,19 +79,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            isLoading.observe(this@MainActivity) {
-                if (it) {
-                    binding.shimmerContainer.startShimmer()
-                    binding.shimmerContainer.visibility = View.VISIBLE
-                } else {
-                    binding.shimmerContainer.stopShimmer()
-                    binding.shimmerContainer.visibility = View.GONE
-                }
-            }
-
             sessionsLiveData.observe(this@MainActivity) { e ->
-                e.getContentIfNotHandled()?.let {
-                    sessionAdapter.setSessionList(it)
+                lifecycleScope.launch {
+                    sessionAdapter.submitData(e)
                     /*binding.parentLayout.showSnackBar(
                         it.joinToString(
                             separator = ",",

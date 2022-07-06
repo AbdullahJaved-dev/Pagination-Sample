@@ -2,15 +2,17 @@ package com.sdsol.paginationsample.ui
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.sdsol.paginationsample.data.datasource.SessionsDataSource
 import com.sdsol.paginationsample.di.ResourceProvider
 import com.sdsol.paginationsample.model.request.provider_sessions.GetProviderSessionsRequest
 import com.sdsol.paginationsample.model.response.provider_sessions.Listing
 import com.sdsol.paginationsample.network.BackEndApi
 import com.sdsol.paginationsample.util.BaseViewModel
-import com.sdsol.paginationsample.util.Event
-import com.sdsol.paginationsample.util.toMain
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,31 +22,25 @@ class MainActivityViewModel @Inject constructor(
     val retrofitClient: BackEndApi
 ) : BaseViewModel() {
 
-    val sessionsLiveData = MutableLiveData<Event<MutableList<Listing>>>()
-
-    fun getSessions(pageNo: Int) {
+    var sessionsLiveData = MutableLiveData<PagingData<Listing>>()
+    fun getSessions() {
         if (resourceProvider.isInternetUnAvailable())
             return
-        isLoading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO + handler) {
-            val getSessionsResponse = retrofitClient.getProviderSessionsList(
-                GetProviderSessionsRequest(
-                    "Past",
-                    pageNo,
-                    50,
-                    65
-                )
-            ).response
-            toMain {
-                isLoading.postValue(false)
-                getSessionsResponse?.apply {
-                    if (code == 0) {
-                        sessionsLiveData.postValue(Event(dataObject?.sessionsList?.listing!!))
-                    } else {
-                        _toast.postValue(Event(status))
-                    }
-                }
+        val request = GetProviderSessionsRequest(
+            "Past",
+            1,
+            10,
+            65
+        )
+        val listData = Pager(PagingConfig(10)) {
+            SessionsDataSource(request, retrofitClient)
+        }.flow.cachedIn(viewModelScope)
+
+        viewModelScope.launch {
+            listData.collect {
+                sessionsLiveData.postValue(it)
             }
         }
+
     }
 }
